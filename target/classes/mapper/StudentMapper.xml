@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.coolway.dao.StudentMapper">
+    <!-- id:statement的id 或者叫做sql的id-->
+    <!-- parameterType:声明输入参数的类型 -->
+    <!-- resultType:声明输出结果的类型，应该填写pojo的全路径 -->
+    <!-- #{}：输入参数的占位符，相当于jdbc的？ -->
+
+    <select id="queryStudentById" parameterType="String" resultType="com.coolway.bean.Student">
+        SELECT * FROM student t WHERE t.id = #{id}
+    </select>
+
+    <select id="queryStudentByName" parameterType="String" resultType="com.coolway.bean.Student">
+        select * from student t
+        where t.name like '%${name}%'
+    </select>
+
+    <select id="queryStudentByMap" parameterType="Map" resultType="com.coolway.bean.Student">
+        select * from student t
+        where 1=1
+        <if test="name != null and name != ''">
+            AND t.name like '%${name}%'
+        </if>
+        <if test="age != null and age!= ''">
+            AND t.age > #{age}
+        </if>
+    </select>
+
+    <select id="queryStudentMapById" parameterType="String" resultType="Map">
+        select * from student t where t.id = #{id}
+    </select>
+
+    <insert id="insertStudent" parameterType="com.coolway.bean.Student">
+        <selectKey keyProperty="id" resultType="String" order="AFTER">
+            select LAST_INSERT_ID()
+        </selectKey>
+        insert into student(id,name)
+        values(#{id}, #{name})
+    </insert>
+
+    <update id="updateStudent" parameterType="com.coolway.bean.Student">
+        update student t set t.name = #{name} where t.id = #{id}
+    </update>
+
+    <delete id="deleteStudent" parameterType="String">
+        delete from student where id = #{id}
+    </delete>
+</mapper>
